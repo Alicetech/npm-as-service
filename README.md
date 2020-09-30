@@ -24,14 +24,19 @@ PATH=$PATH:node_modules/npm-as-service/bin
 
 ## Start your project on boot
 
-In your project root where package.json is located:
+In your project root where package.json is located run:
 ````
 npm-service install
 ````
 
+If you don't have a package.json in your project root you can run:
+````
+npm init
+````
+
 You must then edit your package.json to specify your start command
 
-package.json:
+package.json: (minimal)
 ```
 {
   ...
@@ -41,11 +46,10 @@ package.json:
     "start": "node ${npm_package_main}",
    }
    ...
+}
 ```
 
-You can also use forever
-
-package.json:
+package.json:  (using forever)
 ```
 {
   ...
@@ -55,6 +59,7 @@ package.json:
     "start": "forever start ${PWD}/${npm_package_main}",
    }
    ...
+}
 ```
 ## Automaticly (daily) update your project including security issues with dependencies
 ```
