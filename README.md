@@ -67,5 +67,6 @@ npm-service install --cmd npm audit fix --crontab_time @daily
 - Test other platforms
 - Other service starting methods
 - Detect help install crontab
-- npm-service init to edit pacakge.json (detect forever)
-- npm-service init-insecure to edit pacakge.json (disable updates)
+- 'npm-service init' to edit pacakge.json (detect forever, postinstall, remove, rootless)
+- 'npm-service init-insecure' to edit pacakge.json (disable updates)
+- Example project
