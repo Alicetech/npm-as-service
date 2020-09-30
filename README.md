@@ -1,4 +1,4 @@
-# npm-service
+# NPM Project As A Service
 (No root required) Adds npm project to start on system boot (with/without forever) or on scheduled (such as npm/git updates daily). 
 
 # Installation
@@ -61,3 +61,11 @@ package.json:
 npm-service install --cmd npm update --crontab_time @daily
 npm-service install --cmd npm audit fix --crontab_time @daily
 ```
+
+# todo
+- Unit testing
+- Test other platforms
+- Other service starting methods
+- Detect help install crontab
+- npm-service init to edit pacakge.json (detect forever)
+- npm-service init-insecure to edit pacakge.json (disable updates)
