@@ -56,7 +56,8 @@ package.json:  (using forever)
   "main": "index.js",
   ....
   "scripts": {
-    "start": "forever start ${PWD}/${npm_package_main}",
+    "start": "npm stop --silent; forever start --sourceDir \"${PWD}\" \"${PWD}/${npm_package_main}\"",
+    "stop": "forever stop \"${PWD}/${npm_package_main}\"",
    }
    ...
 }
