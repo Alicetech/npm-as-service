@@ -46,10 +46,10 @@ function command_add(command,description,action){
         .description(description)
         .option('-c, --cmd <command...>', 'The command to use for cron', ['npm','start'])
         .option('--prefix <path>', 'npm --prefix',process.env.PWD)
-        .option('-t, --crontab_time <time>', 'comma separated time specification list or nickname {m h dom mon dow,@reboot,@yearly,@annually,@monthly,@weekly,@daily,@hourly}. see "man crontab(5)"', "@reboot")
-        .option('-p, --cron_paths <PATH:PATH:...>', 'extra environment paths for cron. For example where npm is located.', "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin")
-        .option('-l, --cron_log <PATH>', 'path to cron log')
-        .option('-v, --verbose', 'verbose debug output')
+        .option('-t, --crontab_time <time>', 'Comma separated time specification list or nickname {m h dom mon dow,@reboot,@yearly,@annually,@monthly,@weekly,@daily,@hourly}. see "man crontab(5)"', "@reboot")
+        .option('-p, --cron_paths <PATH:PATH:...>', 'Extra environment paths for cron. For example where npm is located.', "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin")
+        .option('-l, --cron_log <PATH>', 'Path to cron log')
+        .option('-v, --verbose', 'Verbose debug output')
 
         .action(function(options){
             var args = Array.prototype.slice.call(arguments);
@@ -63,7 +63,7 @@ function command_add(command,description,action){
             options.crontab_line=options.crontab_time;
 
             if (options.cron_paths)
-                options.crontab_line+=" PATH=$PATH:" + shellescape([options.cron_paths.replace(/[^a-z0-9\/:]/gi,"")]);
+                options.crontab_line+=" PATH=$PATH:" + shellescape([options.cron_paths.replace(/[^a-z0-9\/:]/gi,"") + ":" + options.prefix + "/node_modules/.bin"]);
             
             options.crontab_line+=" " + shellescape( options.cmd.concat(["--prefix", options.prefix]) );
 

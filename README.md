@@ -18,7 +18,7 @@ sudo npm install npm-as-service -g
 Use in your project only:
 ````
 npm install npm-as-service --save
-PATH=$PATH:node_modules/npm-as-service/bin
+PATH=$PATH:node_modules/.bin
 ````
 # Usage
 
