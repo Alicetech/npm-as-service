@@ -67,6 +67,49 @@ npm-service install --cmd npm update --crontab_time @daily
 npm-service install --cmd npm audit fix --crontab_time @daily
 ```
 
+## How to remove services
+```
+npm-service remove
+npm-service remove --cmd npm update --crontab_time @daily
+npm-service remove --cmd npm audit fix --crontab_time @daily
+```
+
+## More help:
+```
+$ npm-service --help
+Usage: npm-as-service [options] [command]
+
+Options:
+  -V, --version      output the version number
+  -h, --help         display help for command
+
+Commands:
+  install [options]  install npm package as a service
+  remove [options]   remove npm package as a service
+  help [command]     display help for command
+```
+
+## Install help:
+```
+$ npm-service install --help
+Usage: npm-as-service install [options]
+
+install npm package as a service
+
+Options:
+  -c, --cmd <command...>            The command to use for cron (default: ["npm","start"])
+  --prefix <path>                   npm --prefix (default: "/home/owner/Documents/repos/npm-as-service")
+  -t, --crontab_time <time>         Comma separated time specification list or nickname {m h dom mon 
+                                        dow,@reboot,@yearly,@annually,@monthly,@weekly,@daily,@hourly}. see "man crontab(5)" 
+                                        (default: "@reboot")
+  -p, --cron_paths <PATH:PATH:...>  Extra environment paths for cron. For example where npm is located. 
+                                        (default: "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin")
+  -l, --cron_log <PATH>             Path to cron log
+  -v, --verbose                     Verbose debug output
+  -h, --help                        Display help for command
+```
+
+
 # todo
 - Unit testing
 - Test other platforms
