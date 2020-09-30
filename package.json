@@ -1,6 +1,6 @@
 {
   "name": "npm-as-service",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "(No root required) Adds npm project to start on system boot (with/without forever) or on scheduled (such as npm/git updates daily).",
   "main": "./bin/npm-service",
   "author": "Adam Florizone <support@alicetech.net>",
@@ -16,7 +16,7 @@
     "auto_update": "node bin/npm-service install --cmd npm update \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
     "auto_fix": "node bin/npm-service install --cmd npm audit fix \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
     "watch_logs": "watch 'crontab -l; tail *.log'",
-    "publish":"git add . && git commit && git push && npm publish"
+    "push": "git add . && git commit && git push && npm publish"
   },
   "bin": {
     "npm-service": "./bin/npm-service"
