@@ -56,8 +56,8 @@ package.json:  (using forever)
   "main": "index.js",
   ....
   "scripts": {
-    "start": "npm stop --silent; forever start --sourceDir \"${PWD}\" \"${PWD}/${npm_package_main}\"",
-    "stop": "forever stop \"${PWD}/${npm_package_main}\"",
+    "start": "npm stop --silent; forever start --workingDir \"${PWD}\" \"${PWD}/${npm_package_main}\"",
+    "stop": "forever stop --silent \"${PWD}/${npm_package_main}\"",
    }
    ...
 }
@@ -109,13 +109,3 @@ Options:
   -v, --verbose                     Verbose debug output
   -h, --help                        Display help for command
 ```
-
-
-# todo
-- Unit testing
-- Test other platforms
-- Other service starting methods
-- Detect help install crontab
-- 'npm-service init' to edit pacakge.json (detect forever, postinstall, remove, rootless)
-- 'npm-service init-insecure' to edit pacakge.json (disable updates)
-- Example project
