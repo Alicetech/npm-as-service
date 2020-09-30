@@ -1,6 +1,6 @@
 {
   "name": "npm-as-service",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "(No root required) Adds npm project to start on system boot (with/without forever) or on scheduled (such as npm/git updates daily).",
   "main": "./bin/npm-service",
   "author": "Adam Florizone <support@alicetech.net>",

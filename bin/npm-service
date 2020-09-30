@@ -44,7 +44,7 @@ function command_add(command,description,action){
     return program
         .command(command)
         .description(description)
-        .option('-c, --cmd <command...>', 'The command to use for cron', 'npm start')
+        .option('-c, --cmd <command...>', 'The command to use for cron', ['npm','start'])
         .option('--prefix <path>', 'npm --prefix',process.env.PWD)
         .option('-t, --crontab_time <{m h dom mon dow,@reboot,@yearly,@annually,@monthly,@weekly,@daily,@hourly}>', 'comma separated time specification list or nickname. see "man crontab(5)"', "@reboot")
         .option('-p, --cron_paths <PATH:PATH:...>', 'extra environment paths for cron. For example where npm is located.', "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin")
