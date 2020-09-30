@@ -15,7 +15,8 @@
     "start": "node ${npm_package_main} start",
     "auto_update": "node bin/npm-service install --cmd npm update \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
     "auto_fix": "node bin/npm-service install --cmd npm audit fix \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
-    "watch_logs": "watch 'crontab -l; tail *.log'"
+    "watch_logs": "watch 'crontab -l; tail *.log'",
+    "publish":"git add . && git commit && git push && npm publish"
   },
   "bin": {
     "npm-service": "./bin/npm-service"
