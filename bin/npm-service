@@ -1,0 +1,133 @@
+#!/usr/bin/env node
+"use strict";
+
+const spawnSync = require('child_process').spawnSync;
+const { program } = require('commander');
+const shellescape = require('shell-escape');
+const escapeStringRegexp = require('escape-string-regexp');
+
+function hasSub(result,sub,step)
+{
+    if (sub)
+    {
+        console.error(step,sub);
+        process.stdout.write(result.stdout);
+        process.stderr.write(result.stderr);
+        return true;
+    }
+    return false;
+}
+
+function hasError(result,step)
+{
+    return hasSub(result,result.error,step);
+}
+
+function hasStatus(result,step)
+{
+    return hasSub(result,result.error,step) || hasSub(result,result.status,step);
+}
+
+const validCronTime=/(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})/;
+
+
+var npm_package = require('../package.json');
+
+program
+    .name(npm_package.name);
+
+program
+    .version(npm_package.version);
+    
+// this function is used because install and uninstall have the simular options
+function command_add(command,description,action){
+    return program
+        .command(command)
+        .description(description)
+        .option('-c, --cmd <command...>', 'The command to use for cron', 'npm start')
+        .option('--prefix <path>', 'npm --prefix',process.env.PWD)
+        .option('-t, --crontab_time <{m h dom mon dow,@reboot,@yearly,@annually,@monthly,@weekly,@daily,@hourly}>', 'comma separated time specification list or nickname. see "man crontab(5)"', "@reboot")
+        .option('-p, --cron_paths <PATH:PATH:...>', 'extra environment paths for cron. For example where npm is located.', "/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin")
+        .option('-l, --cron_log <PATH>', 'path to cron log')
+        .option('-v, --verbose', 'verbose debug output')
+
+        .action(function(options){
+            var args = Array.prototype.slice.call(arguments);
+            // const options=args.slice(-1)[0];
+
+            if (!validCronTime.test(options.crontab_time)){
+                console.error("crontab_time is not valid",options.crontab_time);
+                return process.exitCode = 2;
+            }
+
+            options.crontab_line=options.crontab_time;
+
+            if (options.cron_paths)
+                options.crontab_line+=" PATH=$PATH:" + shellescape([options.cron_paths.replace(/[^a-z0-9\/:]/gi,"")]);
+            
+            options.crontab_line+=" " + shellescape( options.cmd.concat(["--prefix", options.prefix]) );
+
+            if (options.cron_log)
+                options.crontab_line+= " >> " + shellescape([options.cron_log]) + " 2>&1"
+
+            if (options.verbose === true)
+                console.log(options.crontab_line);
+
+            action.apply(this,args);
+        });
+}
+
+
+command_add(
+    'install',
+    'install npm package as a service',
+    function(options){
+        const crontab_list = spawnSync('crontab', ['-l'], { encoding : 'utf8'})
+        if (hasError(crontab_list,"service not installed. cant get service list."))
+            return process.exitCode = 1;
+
+        if (crontab_list.stdout.indexOf(options.crontab_line)!=-1){
+            console.error("service already installed");
+            return process.exitCode = 3;
+        }
+
+        const fullCron=crontab_list.stdout + options.crontab_line + "\n";
+        if (options.verbose === 2)
+            console.log(fullCron);
+
+        const crontab_new_pseudo_stdout = spawnSync('crontab', ['-'], { encoding : 'utf8', input: fullCron}) // \n is required
+        if (hasStatus(crontab_new_pseudo_stdout,"service not installed"))
+            return process.exitCode = 1;
+
+        console.log("service installed");
+    }
+);
+
+command_add(
+    'remove',
+    'remove npm package as a service',
+    function(options){
+        const crontab_list = spawnSync('crontab', ['-l'], { encoding : 'utf8'})
+        if (hasError(crontab_list,"service not installed. cant get service list."))
+            return process.exitCode = 1;
+
+        if (crontab_list.stdout.indexOf(options.crontab_line)==-1){
+            console.error("service is not installed");
+            return process.exitCode = 3;
+        }
+
+        const matchRegex=new RegExp("^" + escapeStringRegexp(options.crontab_line) + "\n","g") // g modifier: global. All matches (don't return on first match)
+
+        const crontab_list_lines=
+            crontab_list.stdout.replace(matchRegex, "");
+
+        const crontab_new_pseudo_stdout = spawnSync('crontab', ['-'], { encoding : 'utf8', input: crontab_list_lines}) // \n is required
+        if (hasStatus(crontab_new_pseudo_stdout,"service not installed"))
+            return process.exitCode = 1;
+
+        console.log("service removed");
+    }
+);
+
+program
+    .parse(process.argv)

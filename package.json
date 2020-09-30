@@ -1,0 +1,28 @@
+{
+  "name": "npm-as-service",
+  "version": "0.1.1",
+  "description": "(No root required) Adds npm project to start on system boot (with/without forever) or on scheduled (such as npm/git updates daily).",
+  "main": "./bin/npm-service",
+  "author": "Adam Florizone <support@alicetech.net>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alicetech/npm-as-service.git"
+  },
+  "scripts": {
+    "test": "rm -f \"${PWD}/crontest.log\"; node bin/npm-service install --cmd npm run-script test_cronreturn --cron_log \"${PWD}/crontest.log\" --crontab_time '* * * * *' --verbose --prefix \"${PWD}\" && printf \"\nTest will now take up to 1min \" && while [ ! -f \"${PWD}/crontest.log\" ]; do printf .; sleep 3;  done",
+    "test_cronreturn": "node bin/npm-service remove --cmd npm run-script test_cronreturn --cron_log \"${PWD}/crontest.log\" --crontab_time '* * * * *' --verbose;",
+    "start": "node ${npm_package_main} start",
+    "auto_update": "node bin/npm-service install --cmd npm update \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
+    "auto_fix": "node bin/npm-service install --cmd npm audit fix \"${PWD}\" --crontab_time @daily --verbose --cron_log \"${PWD}/update.log\"",
+    "watch_logs": "watch 'crontab -l; tail *.log'"
+  },
+  "bin": {
+    "npm-service": "./bin/npm-service"
+  },
+  "dependencies": {
+    "commander": "^6.1.0",
+    "escape-string-regexp": "^4.0.0",
+    "shell-escape": "^0.2.0"
+  }
+}
